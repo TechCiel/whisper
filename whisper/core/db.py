@@ -17,6 +17,7 @@ def get_db() -> sqlite3.Connection:
     if 'db' not in g or not isinstance(g.db, sqlite3.Connection):
         g.db = sqlite3.connect(current_app.instance_resource('whisper.db'))
         g.db.row_factory = sqlite3.Row
+        g.db.execute('PRAGMA foreign_keys = ON')
         current_app.e('core:db_connect')
     return g.db
 
