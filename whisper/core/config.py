@@ -18,4 +18,6 @@ app.c.core.main = 'core'
 app.c.core.title = 'Whisper'
 
 # the icon of this website
-app.c.core.icon = '/static/logo.png'
+app.c.core.icon = ''
+# Example:
+# app.c.core.icon = '/static/logo.png'
