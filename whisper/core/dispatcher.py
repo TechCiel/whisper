@@ -14,6 +14,15 @@ __all__: list[str] = []
 bp = Blueprint('core', __name__)
 
 
+@bp.app_context_processor
+def inject_config() -> dict[str, t.Any]:
+    """Inject config and event manager object into template context"""
+    return {
+        'c': current_app.c,
+        'e': current_app.e,
+    }
+
+
 @bp.route('/<slug:slug>/', endpoint='post', defaults={'path': ''})
 @bp.route('/<slug:slug>/<path:path>', endpoint='post_resource')
 def post_page(slug: str, path: str) -> ResponseReturnValue:

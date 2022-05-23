@@ -13,3 +13,9 @@ from .provider import StubProvider as provider  # pylint: disable=unused-import
 # the plugin used as main provider plugin (a.k.a. theme)
 # this is the STUB provider, CHANGE IN PRODUCTION
 app.c.core.main = 'core'
+
+# the title of this website
+app.c.core.title = 'Whisper'
+
+# the icon of this website
+app.c.core.icon = '/static/logo.png'

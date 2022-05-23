@@ -63,6 +63,8 @@ class WhisperFlask(Flask):
         self.secret_key = secrets.token_hex(32)
         self.use_x_sendfile = True
         self.url_map.converters['slug'] = WhisperFlask.SlugConverter
+        self.jinja_options['autoescape'] = False  # be careful
+        self.config['SESSION_REFRESH_EACH_REQUEST'] = True
         # app global objects
         self.c = Config()
         self.e = EventManager()
