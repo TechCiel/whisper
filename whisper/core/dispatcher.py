@@ -9,13 +9,13 @@ from . import current_app
 from .post import get_post
 from .provider import BaseProvider
 
-__all__ = ['post_page', 'list_page', 'not_found_page']
+__all__: list[str] = []
 
-bp = Blueprint('dispatcher', __name__)
+bp = Blueprint('core', __name__)
 
 
-@bp.route('/<slug:slug>/', defaults={'path': ''})
-@bp.route('/<slug:slug>/<path:path>')
+@bp.route('/<slug:slug>/', endpoint='post', defaults={'path': ''})
+@bp.route('/<slug:slug>/<path:path>', endpoint='post_resource')
 def post_page(slug: str, path: str) -> ResponseReturnValue:
     """Send post page request to the corresponding provider plugin"""
     p = get_post(slug)
@@ -41,8 +41,8 @@ def post_page(slug: str, path: str) -> ResponseReturnValue:
     return current_app.p[p.provide].render(p, path)
 
 
-@bp.route('/', defaults={'tag': None})
-@bp.route('/tag/<string:tag>/')
+@bp.route('/', endpoint='index', defaults={'tag': None})
+@bp.route('/tag/<string:tag>/', endpoint='tag')
 def list_page(tag: t.Optional[str]) -> ResponseReturnValue:
     """Send list/index page request to the main provider plugin"""
     page = request.args.get('page', 1, type=int)  # sanitize type
@@ -50,9 +50,9 @@ def list_page(tag: t.Optional[str]) -> ResponseReturnValue:
     return current_app.main.render_list(page, tag)
 
 
-@bp.route('/static/<path:path>')
+@bp.route('/static/<path:path>', endpoint='static')
 def static(path: str) -> ResponseReturnValue:
-    """Search static files"""
+    """Search user static files"""
     evt = current_app.e('core:static', {'path': path})
     if 'return' in evt:
         return evt['return']  # type: ignore
