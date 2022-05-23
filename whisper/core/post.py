@@ -5,12 +5,13 @@ list of Post objects by tag with pagination.
 import typing as t
 import os
 import re
+import math
 import time
 import shutil
 
 from . import current_app
 
-__all__ = ['Post', 'get_post', 'get_posts', 'count_posts']
+__all__ = ['Post', 'get_post', 'get_posts']
 
 
 class Post:
@@ -169,44 +170,41 @@ def get_post(slug: str, show_private: bool = False) -> t.Optional[Post]:
 
 
 def get_posts(
-    page: int = 1,
-    tag: t.Optional[str] = None,
-    indexed: bool = True,
-    public: bool = True,
-    limit: int = 0,
-) -> list[Post]:
-    """Return a list of Post object with pagination, optionally by tag"""
-    if not limit:
-        limit = current_app.c.core.page_size
+    page: int,
+    page_size: int,
+    tag: t.Optional[str],
+    indexed: t.Optional[bool],
+    public: t.Optional[bool],
+    provider: t.Optional[str],
+    like: t.Optional[str],
+) -> tuple[list[Post], int]:
+    """Return a list of Post with filtering and pagination"""
+    # pylint: disable=too-many-arguments
     tag = current_app.e('core:get_posts', {'tag': tag}).get('tag', tag)
-    sql = 'SELECT post.* FROM post'
-    sql += (
-        ' JOIN tag ON post.slug=tag.post WHERE tag.tag=?'
-        if tag
-        else ' WHERE 1'
+    if tag:
+        cond_sql = ' JOIN tag ON post.slug = tag.post WHERE tag.tag = :tag'
+    else:
+        cond_sql = ' WHERE 1'
+    if indexed is not None:
+        cond_sql += ' AND indexed = :indexed'
+    if public is not None:
+        cond_sql += ' AND public = :public'
+    if provider is not None:
+        cond_sql += ' AND provide = :provider'
+    if like is not None:
+        like = '%'.join(['']+like.split()+[''])
+        cond_sql += ' AND (slug LIKE :like OR title LIKE :like)'
+    limit_sql = ' ORDER BY creation DESC'
+    limit_sql += f' LIMIT {page_size} OFFSET {(page-1)*page_size}'
+    select_cur = current_app.db.execute(
+        'SELECT post.* FROM post'+cond_sql+limit_sql,
+        locals()
     )
-    sql += ' AND indexed = 1' if indexed else ''
-    sql += ' AND public = 1' if public else ''
-    sql += ' ORDER BY creation DESC'
-    sql += f' LIMIT {limit} OFFSET {(page-1)*limit}'
-    cur = current_app.db.execute(sql, (tag,) if tag else ())
-    return [Post(**dict(row)) for row in cur]
-
-
-def count_posts(
-    tag: t.Optional[str] = None,
-    indexed: bool = True,
-    public: bool = True
-) -> int:
-    """Count posts matching given criteria"""
-    tag = current_app.e('core:count_posts', {'tag': tag}).get('tag', tag)
-    sql = 'SELECT COUNT(*) FROM post'
-    sql += (
-        ' JOIN tag ON post.slug=tag.post WHERE tag.tag=?'
-        if tag
-        else ' WHERE 1'
+    count_cur = current_app.db.execute(
+        'SELECT COUNT(*) FROM post'+cond_sql,
+        locals()
     )
-    sql += ' AND indexed = 1' if indexed else ''
-    sql += ' AND public = 1' if public else ''
-    cur = current_app.db.execute(sql, (tag,) if tag else ())
-    return int(cur.fetchone()[0])
+    return (
+        [Post(**dict(row)) for row in select_cur],  # posts
+        math.ceil(int(count_cur.fetchone()[0]) / page_size),  # total pages
+    )
