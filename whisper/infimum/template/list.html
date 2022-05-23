@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{% if tag %}Tag {{ tag }} - {% endif %}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('infimum.static', path='list.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div id="list">
+        {% for post in posts %}
+        <article>
+            <h2><a href="{{ url_for('core.post', slug=post.slug) }}">{{ post.title or '(no title)' }}</a></h2>
+            <p class="tagline">
+                on {{ strftime(post.creation, '%Y/%m/%d') }}{% for tag in post.tag %}, <a href="{{ url_for('core.tag', tag=tag) }}">#{{ tag }}</a>{% endfor %}
+            </p>
+            <p class="excerpt">{{ post.excerpt }}</p>
+        </article>
+        {% endfor %}
+        <p id="pagination">
+            <a href="#" onclick="page(1)">&lt;&lt;</a>
+            <a href="#" onclick="page({{ prev_page }})">&lt;</a>
+            <input id="page" type="text" onchange="page(this.value)" value="{{ page }}"> / {{ max_page }}
+            <a href="#" onclick="page({{ next_page }})">&gt;</a>
+            <a href="#" onclick="page({{ max_page }})">&gt;&gt;</a>
+        </p>
+        <script>
+            function page(p) {
+                query = new URLSearchParams();
+                query.set('page', p)
+                if (query.get('page') === '1') query.delete('page')
+                window.location.search = query.toString()
+            }
+        </script>
+    </div>
+{% endblock %}

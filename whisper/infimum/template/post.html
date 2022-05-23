@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - {% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('infimum.static', path='post.css') }}">
+{% endblock %}
+
+{% block content %}
+    <article>
+        <h1>{{ post.title or '(no title)' }}</h1>
+        <p id="tagline">
+            on {{ strftime(post.creation, '%Y/%m/%d') }},
+            {% for tag in post.tag %}
+            <a target="_blank" href="{{ url_for('core.tag', tag=tag) }}">#{{ tag }}</a>,
+            {% endfor %}
+        </p>
+        {{ post.content }}
+    </article>
+{% endblock %}

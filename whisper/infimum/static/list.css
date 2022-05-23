@@ -1,0 +1,29 @@
+main #list article {
+    border-bottom: solid 1px #cccc;
+}
+
+main #list article h2 {
+    margin-bottom: 0.2em;
+}
+
+main #list article h2 a {
+    color: var(--fg);
+}
+
+main #list article .tagline {
+    margin: 0;
+    font-style: italic;
+}
+
+#pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 20em;
+    margin: 1em auto;
+}
+
+#pagination input {
+    width: 3em;
+}
+

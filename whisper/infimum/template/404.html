@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Not Found - {% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('infimum.static', path='post.css') }}">
+{% endblock %}
+
+{% block content %}
+    <article>
+        <h1>Post Not Found</h1>
+        {% block not_found %}
+            <p>Check <a href="{{ url_for('core.index') }}">home page</a> for latest posts.</p>
+        {% endblock %}
+    </article>
+{% endblock %}
