@@ -104,7 +104,6 @@ def edit(slug: str) -> ResponseReturnValue:
     """Update post content, tags and metas"""
     if not (post := get_post(slug, show_private=True)):
         abort(404)
-    print(request.form)
     slug = request.form.get('slug', post.slug, type=str)
     try:
         if slug != post.slug and get_post(slug, show_private=True):  # exist?
@@ -132,6 +131,7 @@ def edit(slug: str) -> ResponseReturnValue:
         request.form.getlist('value[]', type=str)
     ))
     post.save()
+    flash(f'saved post {post.slug}')
     return redirect(url_for('admin.post', slug=post.slug))
 
 
