@@ -160,19 +160,11 @@ header a {
         padding-left: 5%;
         padding-right: 5%;
     }
-
-    table tr> :nth-child(3) {
-        display: none;
-    }
 }
 
 @media screen and (max-width: 568px) {
     body {
         padding-left: 1em;
         padding-right: 1em;
-    }
-
-    table tr> :nth-child(4) {
-        display: none;
     }
 }
