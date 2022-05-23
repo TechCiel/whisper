@@ -1,0 +1,15 @@
+# instance data
+/venv/*
+/instance/*
+!/instance/*example*
+
+# tmp files
+.*
+~*
+*~
+_*
+*.egg*
+/build/
+/dist/
+!.git*
+!__*__.py
