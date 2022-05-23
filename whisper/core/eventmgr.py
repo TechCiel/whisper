@@ -36,3 +36,11 @@ class EventManager:
             if arg.pop('_stop', False):
                 break
         return arg
+
+
+def event_handler(event: str) -> t.Callable[[EventHandler], EventHandler]:
+    """Register decorated function as event handler"""
+    def decorator(f: EventHandler) -> EventHandler:
+        current_app.e.register(event, f)
+        return f
+    return decorator
