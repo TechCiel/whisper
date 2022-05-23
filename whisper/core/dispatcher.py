@@ -2,14 +2,16 @@
 This module dispatches pages to the main provider plugin
 """
 import typing as t
-from flask import Blueprint, request, abort, send_from_directory
+import jinja2
+from flask import Blueprint, request, abort, send_from_directory, \
+                  render_template
 from flask.typing import ResponseReturnValue
 
 from . import current_app
 from .post import get_post
 from .provider import BaseProvider
 
-__all__: list[str] = []
+__all__ = ['template']
 
 bp = Blueprint('core', __name__)
 
@@ -21,6 +23,25 @@ def inject_config() -> dict[str, t.Any]:
         'c': current_app.c,
         'e': current_app.e,
     }
+
+
+def template(
+    plugin: str,
+    file: str,
+    plugin_template_dir: str = 'template',
+    enforce_template_dir: t.Union[str, list[str]] = '',
+    **kwargs: t.Any
+) -> str:
+    """Render from package specified template directory"""
+    old_loader = current_app.jinja_env.loader
+    try:
+        current_app.jinja_env.loader = jinja2.FileSystemLoader(
+            enforce_template_dir
+            or current_app.app_resource(plugin, plugin_template_dir)
+        )
+        return render_template(file, **kwargs)
+    finally:
+        current_app.jinja_env.loader = old_loader
 
 
 @bp.route('/<slug:slug>/', endpoint='post', defaults={'path': ''})
