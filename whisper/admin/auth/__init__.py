@@ -95,7 +95,8 @@ def auth() -> ResponseReturnValue:
         for method in criteria:
             fulfilled &= current_app.c.admin.auth.all[method].check()
         if fulfilled:
-            session.permanent = True
+            if request.form.get('trust'):
+                session.permanent = True
             session['whisper'] = 'admin'
             return redirect(url_for('admin.admin'))
     flash('Log in failed')

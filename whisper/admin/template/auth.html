@@ -18,7 +18,7 @@
     {% for method in methods %}
     {{ method() }}
     {% endfor %}
-    <input form="auth" id="trust" name="trust" type="checkbox">&nbsp;<label for="trust">Trust This Device<br><br>
+    <input form="auth" id="trust" name="trust" type="checkbox" checked>&nbsp;<label for="trust">Trust This Device<br><br>
     <button onclick="byId('auth').submit()">Enter</button>
     <script>var policy = {{ policy }}</script>
 {% endblock %}
