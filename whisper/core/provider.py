@@ -4,6 +4,7 @@ This module defines abstract class interfaces for provider plugins.
 This module also provide a stub implementation of MainProvider.
 """
 import typing as t
+from abc import ABC, abstractmethod
 from flask.typing import ResponseReturnValue
 
 from .post import Post
@@ -11,10 +12,11 @@ from .post import Post
 __all__ = ['BaseProvider', 'MainProvider', 'StubProvider']
 
 
-class BaseProvider:
+class BaseProvider(ABC):
     """Base providers render a specific post"""
     # pylint: disable=too-few-public-methods
 
+    @abstractmethod
     def render(self, post: Post, path: str) -> ResponseReturnValue:
         """Render post page, return as a view function returns"""
 
@@ -22,9 +24,11 @@ class BaseProvider:
 class MainProvider(BaseProvider):
     """Main providers can also render a list page and a 404 page"""
 
+    @abstractmethod
     def render_list(self, page: int, tag: t.Optional[str]) -> ResponseReturnValue:
         """Render list page, return as a view function returns"""
 
+    @abstractmethod
     def render_404(self, e: t.Any) -> ResponseReturnValue:
         """Render 404 not found page, return as a view function returns"""
 
@@ -42,4 +46,4 @@ class StubProvider(MainProvider):
 
     def render_404(self, e: t.Any) -> ResponseReturnValue:
         """Print 404"""
-        return '404'
+        return '404', 404
