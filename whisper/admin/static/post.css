@@ -1,0 +1,128 @@
+main {
+    display: flex;
+    margin: 1em 0;
+}
+
+main article {
+    flex: 5 100%;
+    width: 100%;
+}
+
+main article #title {
+    width: 100%;
+    font-size: 2em;
+}
+
+main article #endpoint {
+    display: flex;
+    margin: 1em 0;
+    width: 100%;
+    font-family: monospace;
+}
+
+main article #slug {
+    width: 100%;
+    flex: 5;
+    margin-right: 1em;
+}
+
+main article #provide {
+    width: 100%;
+    flex: 2;
+    margin-left: 1em;
+}
+
+main article #content {
+    height: 40em;
+    width: 100%;
+}
+
+main aside {
+    width: 100%;
+    flex: 0 30em;
+    overflow: hidden;
+    margin-top: -1em;
+    margin-left: 1em;
+}
+
+main aside #year {
+    width: 3em;
+}
+
+main aside #month,
+main aside #day,
+main aside #hour,
+main aside #minute {
+    width: 2em;
+}
+
+main aside textarea {
+    height: 8em;
+}
+
+main aside #delete-post button {
+    background-color: #c00;
+}
+
+table td input {
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    main {
+        flex-wrap: wrap;
+    }
+
+    main aside {
+        margin: 0;
+    }
+}
+
+.toggle {
+    display: none;
+}
+
+.toggle+.toggle-label {
+    overflow: hidden;
+    transition: all 0.2s ease;
+    background: #933;
+    display: inline-block;
+    width: 4em;
+    height: 1.15em;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+}
+
+.toggle+.toggle-label:before,
+.toggle+.toggle-label:after {
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    font-size: 0.8em;
+    color: #fff;
+}
+
+.toggle+.toggle-label:after {
+    left: 100%;
+    content: attr(data-on);
+}
+
+.toggle+.toggle-label:before {
+    left: 0;
+    content: attr(data-off);
+}
+
+.toggle:checked+.toggle-label {
+    background: #393;
+}
+
+.toggle:checked+.toggle-label:before {
+    left: -100%;
+}
+
+.toggle:checked+.toggle-label:after {
+    left: 0;
+}

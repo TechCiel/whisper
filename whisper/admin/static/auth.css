@@ -1,0 +1,11 @@
+body {
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+h1,
+hr {
+    margin: 2em 0;
+}

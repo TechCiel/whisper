@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', path='admin.css') }}">
+{% endblock %}
+
+{% block foot %}
+    <script src="{{ url_for('admin.static', path='admin.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="filter1">
+        <select id="visible" onchange="update()">
+            <option value=""  {{ 'selected' if visible is none }}>- Visibility -</option>
+            <option value="1" {{ 'selected' if visible == true }}>Public</option>
+            <option value="0" {{ 'selected' if visible == false }}>Private</option>
+        </select>
+        <select id="index" onchange="update()">
+            <option value=""  {{ 'selected' if index is none }}>- Index -</option>
+            <option value="1" {{ 'selected' if index == true }}>Included</option>
+            <option value="0" {{ 'selected' if index == false }}>Excluded</option>
+        </select>
+        <input id="tag" type="search" onsearch="update()" placeholder="Tag" value="{{ tag if tag is not none }}">
+        <input id="search" type="search" onsearch="update()"
+            placeholder="Search" value="{{ search if search is not none }}"
+        >
+    </div>
+    <input id="provide" type="hidden" value="{{ provide if provide is not none }}">
+    <div id="filter2">
+        <p id="providers">
+            <span class="provider">
+                <a href="#" onclick="setUpdate('provide', '')" {{ 'disabled' if provide is none }}>ALL</a>
+            </span>
+            {% for provider in providers %}
+            | <span class="provider">
+                <a href="#"
+                    onclick="setUpdate('provide', '{{ provider.name }}')"
+                    {{ 'disabled' if provide == provider.name }}
+                >{{ provider.name }}</a>
+                ({{ provider.count }})
+            </span>
+            {% endfor %}
+        </p>
+        <form id="new-post" method="post" action="{{ url_for('admin.new') }}">
+            <input name="slug" type="search" value="" placeholder="new-post" required>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Post <a href="#" onclick="new_post"</th>
+                <th>Status</th>
+                <th>Tags</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in results %}
+            <tr>
+                <td>
+                    <a class="title"
+                        href="{{ url_for('admin.post', slug=post.slug) }}"
+                    >{{ post.title or '(no title)' }}</a>
+                    <br>
+                    <code>
+                        <a class="slug" href="{{ url_for('core.post', slug=post.slug) }}">{{ post.slug }}</a>
+                        @
+                        <a class="provide" href="#"
+                            onclick="setUpdate('provide', '{{ post.provide }}')"
+                        >{{ post.provide }}</a>
+                    </code>
+                </td>
+                <td class="status">
+                    {{ 'Public' if post.public else 'Private' }}
+                    <br>
+                    {{ 'Included' if post.indexed else 'Excluded' }}
+                </td>
+                <td>
+                    {% for tag in post.tag %}
+                    <a class="tag" href="#" onclick="setUpdate('tag', '{{ tag }}')">{{ tag }}</a>,
+                    {% endfor %}
+                </td>
+                <td class="time">
+                    C: {{ strftime(post.creation) }}
+                    <br>
+                    M: {{ strftime(post.modified) }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p id="pagination">
+        <a href="#" onclick="setUpdate('page', 1)">&lt;&lt;</a>
+        <a href="#" onclick="setUpdate('page', {{ prev_page }})">&lt;</a>
+        <input id="page" type="text" onchange="update()" value="{{ page }}"> / {{ max_page }}
+        <a href="#" onclick="setUpdate('page', {{ next_page }})">&gt;</a>
+        <a href="#" onclick="setUpdate('page', {{ max_page }})">&gt;&gt;</a>
+    </p>
+{% endblock %}

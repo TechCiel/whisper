@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>{% block title %}{% endblock %} - {{ c.core.title }}</title>
+    {% if c.core.icon %}
+    <link rel="shortcut icon" href="{{ c.core.icon }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', path='common.css') }}">
+    {% block head %}{% endblock %}
+    {% block custom_head %}
+        {{ e('admin:custom_head', {'page': request.url_rule.endpoint}).get('html', '') }}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <h1>
+            <a href="{{ url_for('core.index') }}">{{ c.core.title }}</a>
+            {% block admin_home %} / <a href="{{ url_for('admin.admin') }}">Admin</a>{% endblock %}
+        </h1>
+        {% block admin_logout %}
+            <form id="logout" method="post" action="{{ url_for('auth.deauth') }}"></form>
+            <a href="#" onclick="document.getElementById('logout').submit()">Log Out</a>
+        {% endblock %}
+    </header>
+    {% block flash %}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div id="flash">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    {% endblock flash %}
+    <hr>
+    {% block content %}{% endblock %}
+    {% block foot %}{% endblock %}
+    {% block custom_foot %}
+        {{ e('admin:custom_foot', {'page': request.url_rule.endpoint}).get('html', '') }}
+    {% endblock %}
+</body>
+</html>

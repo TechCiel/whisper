@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ post.slug }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', path='post.css') }}">
+{% endblock %}
+
+{% block foot %}
+    <script src="{{ url_for('admin.static', path='post.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <form id="post" method="post" action="{{ url_for('admin.edit', slug=post.slug) }}"></form>
+            <article>
+            <input form="post" id="title" name="title" type="text"
+                value="{{ post.title }}" placeholder="Title"
+                onkeydown="return event.key != 'Enter'"
+            >
+            <div id="endpoint">
+                <input form="post" id="slug" name="slug" type="text"
+                    value="{{ post.slug }}" placeholder="slug"
+                    onkeydown="return event.key != 'Enter'"
+                > @
+                <input form="post" id="provide" name="provide" type="text"
+                    value="{{ post.provide }}" placeholder="provider"
+                    onkeydown="return event.key != 'Enter'"
+                >
+            </div>
+            <textarea form="post" id="content" name="content">{{ post.content }}</textarea>
+        </article>
+        <aside>
+            <details open>
+                <summary>Publish</summary>
+                <p>
+                    Visibility:
+                    <input class="toggle" form="post" id="visible" name="visible"
+                        type="checkbox" {{ 'checked' if post.public }}
+                    >
+                    <label class="toggle-label" data-off="Private" data-on="Public" for="visible"></label>
+                </p>
+                <p>
+                    Index:
+                    <input class="toggle" form="post" id="index" name="index"
+                        type="checkbox" {{ 'checked' if post.indexed }}
+                    >
+                    <label class="toggle-label" data-off="Exclude" data-on="Include" for="index"></label>
+                </p>
+                <p>
+                    Created:
+                    <input form="post" id="creation" name="creation" type="text"
+                        value="{{ strftime(post.creation) }}"
+                        onkeydown="return event.key != 'Enter'"
+                    >
+                </p>
+                <button form="post" type="submit">Save Post</button>
+            </details>
+            <details open>
+                <summary>Excerpt</summary>
+                <textarea form="post" id="excerpt" name="excerpt">{{ post.excerpt }}</textarea>
+            </details>
+            <details open>
+                <summary>Tags</summary>
+                <textarea form="post" id="tags" name="tags">{% for tag in post.tag %}{{tag}}, {% endfor %}</textarea>
+            </details>
+            <details>
+                <summary>Metas</summary>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for meta in post.meta.items() %}
+                        <tr>
+                            <td><input form="post" class="key" name="key[]" type="text" value="{{ meta.0 }}"></td>
+                            <td><input form="post" class="value" name="value[]" type="text" value="{{ meta.1 }}"></td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><input form="post" class="key" name="key[]" type="text" value="" id="new_meta"></td>
+                            <td><input form="post" class="value" name="value[]" type="text" value=""></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </details>
+            <details>
+                <summary>Files</summary>
+                <form id="upload" method="post" enctype="multipart/form-data"
+                    action="{{ url_for('admin.files', slug=post.slug) }}"
+                    onsubmit="return checkUnsaved()"
+                >
+                    <input name="action" type="hidden" value="upload">
+                    <input id="delete-file" name="file" type="file">
+                    <br>
+                    <input id="upload-name" name="name" type="text" placeholder="File Name">
+                </form>
+                <form id="delete" method="post" action="{{ url_for('admin.files', slug=post.slug) }}">
+                    <input name="action" type="hidden" value="delete">
+                    <input id="delete-name" name="name" type="hidden" placeholder="File Name">
+                </form>
+                <ul>
+                {% for file in relfiles %}
+                    <li>
+                        <a href="{{ url_for('core.post_resource', slug=post.slug, path=file) }}">{{ file }}</a>
+                        &emsp;
+                        <a href="#" onclick="deleteFile(this)">DELETE</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </details>
+            {% block custom_foot %}
+                {{ e('admin:custom_edit', {'page': request.url_rule.endpoint, 'slug': post.slug}).get('html', '') }}
+            {% endblock %}
+            <details>
+                <summary>Danger Zone</summary>
+                <form id="delete-post" method="post" action="{{ url_for('admin.delete', slug=post.slug) }}"
+                    onsubmit="return confirm('Are your sure?')"
+                >
+                    <button type="submit">DELETE Post</button>
+                </form>
+            </details>
+        </aside>
+    </main>
+{% endblock %}

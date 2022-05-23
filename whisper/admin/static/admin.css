@@ -1,0 +1,79 @@
+#filter1 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 -0.4em;
+}
+
+#filter1>* {
+    margin: 0.5em;
+}
+
+#filter1 select {
+    flex: 1 5em;
+}
+
+#filter1 #tag {
+    flex: 2 10em;
+}
+
+#filter1 #search {
+    flex: 4 20em;
+}
+
+#filter2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#filter2 #providers {
+    flex: 999 content;
+}
+
+#filter2 #new-post {
+    flex: 1 15em;
+}
+
+#filter2 #new-post input {
+    width: 100%;
+}
+
+table tr> :nth-child(2),
+table tr> :nth-child(4) {
+    white-space: nowrap;
+}
+
+table tr> :nth-child(4) {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+table .title {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+#pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 20em;
+    margin: 1em auto;
+}
+
+#pagination input {
+    width: 3em;
+}
+
+@media screen and (max-width: 768px) {
+    table tr> :nth-child(3) {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 568px) {
+    table tr> :nth-child(4) {
+        display: none;
+    }
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Log In{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', path='auth.css') }}">
+{% endblock %}
+
+{% block foot %}
+    <script src="{{ url_for('admin.static', path='auth.js') }}"></script>
+{% endblock %}
+
+{% block admin_home %}{% endblock %}
+{% block admin_logout %}{% endblock %}
+
+{% block content %}
+    <form id="auth" method="post" action="{{ url_for('auth.auth') }}"></form>
+    {% for method in methods %}
+    {{ method() }}
+    {% endfor %}
+    <input form="auth" id="trust" name="trust" type="checkbox">&nbsp;<label for="trust">Trust This Device<br><br>
+    <button onclick="byId('auth').submit()">Enter</button>
+    <script>var policy = {{ policy }}</script>
+{% endblock %}
