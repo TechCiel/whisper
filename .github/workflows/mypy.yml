@@ -22,4 +22,3 @@ jobs:
     - name: Analysing the code with mypy
       run: |
         mypy --install-types --non-interactive
-        mypy
