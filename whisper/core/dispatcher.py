@@ -32,16 +32,12 @@ def post_page(slug: str, path: str) -> ResponseReturnValue:
     # post not found
     if not p:
         # may use hook
-        evt = current_app.e('core:post_not_found', {'slug': slug})
-        if 'return' in evt:
-            return evt['retrun']  # type: ignore
+        current_app.e('core:post_not_found', {'slug': slug})
         abort(404)
     # provider not found
     if p.provide not in current_app.p:
         # may use hook
         evt = current_app.e('core:provider_not_found', {'slug': slug})
-        if 'return' in evt:
-            return evt['return']  # type: ignore
         # may use dynamic provider
         if 'provider' in evt and isinstance(evt['provider'], BaseProvider):
             return evt['provider'].render(p, path)
@@ -63,9 +59,7 @@ def list_page(tag: t.Optional[str]) -> ResponseReturnValue:
 @bp.route('/static/<path:path>', endpoint='static')
 def static(path: str) -> ResponseReturnValue:
     """Search user static files"""
-    evt = current_app.e('core:static', {'path': path})
-    if 'return' in evt:
-        return evt['return']  # type: ignore
+    current_app.e('core:static', {'path': path})
     if not current_app.static_folder:
         abort(404)
     return send_from_directory(current_app.static_folder, path)
