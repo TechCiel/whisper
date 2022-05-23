@@ -29,7 +29,7 @@ class Post:
         title: str = '',
         excerpt: str = '',
         content: str = '',
-        **kwargs: t.Any,
+        **kwargs: t.Any
     ) -> None:
         """Check slug format and init object"""
         # pylint: disable=too-many-arguments
@@ -58,7 +58,7 @@ class Post:
         if self._tag is None:
             cur = current_app.db.execute(
                 'SELECT tag FROM tag WHERE post=?',
-                (self._orig_slug,),
+                (self._orig_slug,)
             )
             self._tag = {row['tag'] for row in cur}
             self._orig_tag = self._tag.copy()
@@ -71,7 +71,7 @@ class Post:
         if self._meta is None:
             cur = current_app.db.execute(
                 'SELECT k, v FROM meta WHERE post=?',
-                (self._orig_slug,),
+                (self._orig_slug,)
             )
             self._meta = {row['k']: row['v'] for row in cur}
             self._orig_meta = self._meta.copy()
@@ -113,34 +113,34 @@ class Post:
             current_app.e('core:save_post_tag', {'post': self})
             current_app.db.execute(
                 'DELETE FROM tag WHERE post=?',
-                (self._orig_slug,),
+                (self._orig_slug,)
             )
             current_app.db.executemany(
                 'INSERT INTO tag (post, tag) VALUES (?,?)',
-                [(self._orig_slug, tag) for tag in self._tag],
+                [(self._orig_slug, tag) for tag in self._tag]
             )
             self._orig_tag = self._tag.copy()
         if self._meta is not None and self._meta != self._orig_meta:
             current_app.e('core:save_post_meta', {'post': self})
             current_app.db.execute(
                 'DELETE FROM meta WHERE post=?',
-                (self._orig_slug,),
+                (self._orig_slug,)
             )
             current_app.db.executemany(
                 'INSERT INTO meta (post, k, v) VALUES (?,?,?)',
-                [(self._orig_slug, k, v) for k, v in self._meta.items()],
+                [(self._orig_slug, k, v) for k, v in self._meta.items()]
             )
             self._orig_meta = self._meta.copy()
         if self.slug != self._orig_slug:
             current_app.e('core:change_post_slug', {'post': self})
             current_app.db.execute(
                 'UPDATE post SET slug=? WHERE slug=?',
-                (self.slug, self._orig_slug),
+                (self.slug, self._orig_slug)
             )
             if os.path.isdir(current_app.instance_resource(self._orig_slug)):
                 os.rename(
                     current_app.instance_resource(self._orig_slug),
-                    current_app.instance_resource(self.slug),
+                    current_app.instance_resource(self.slug)
                 )
             self._orig_slug = self.slug
         current_app.db.commit()
@@ -150,7 +150,7 @@ class Post:
         current_app.e('core:delete_post', {'post': self})
         current_app.db.execute(
             'DELETE FROM post WHERE slug=?',
-            (self._orig_slug,),
+            (self._orig_slug,)
         )
         if os.path.isdir(current_app.instance_resource(self._orig_slug)):
             shutil.rmtree(current_app.instance_resource(self._orig_slug))

@@ -116,7 +116,9 @@ with app.app_context():
     # search for main provider plugin
     app.main = app.p['main'] = app.p.get(app.c.core.main)  # type: ignore
     if not isinstance(app.p['main'], MainProvider):
-        raise TypeError(f'MainProvider not found at {app.c.core.main}.config.provider')
+        raise TypeError(
+            f'MainProvider not found at {app.c.core.main}.config.provider'
+        )
 
     # finished starting
     app.e('core:loaded')
