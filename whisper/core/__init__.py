@@ -105,11 +105,10 @@ with app.app_context():
     db.init_db()
 
     # execute user config
-    with open(
-        current_app.instance_resource('config.py'),
-        'r',
-        encoding='utf-8',
-    ) as f:
+    config = current_app.instance_resource('config.py')
+    if not os.path.isfile(config):
+        raise FileNotFoundError(f'Config file `{config}` not found!')
+    with open(config, 'r', encoding='utf-8') as f:
         # pylint: disable=exec-used
         exec(compile(
             f.read(),
