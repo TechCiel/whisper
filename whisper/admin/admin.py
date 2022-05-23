@@ -42,7 +42,7 @@ def admin() -> ResponseReturnValue:
     page = san_page(request.args.get('page', 1, type=int))
     results, max_page = get_posts(
         page=page,
-        page_size=20,
+        page_size=current_app.c.admin.page_size,
         tag=tag,
         indexed=index,
         public=visible,

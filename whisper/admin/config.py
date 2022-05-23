@@ -22,3 +22,5 @@ app.c.admin.auth.all = {}
 app.c.admin.auth.policy = []
 # Example:
 # app.c.admin.auth.policy = [['password'], ['cookie', 'dummy']]
+
+app.c.admin.page_size = 10
