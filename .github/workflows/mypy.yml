@@ -21,4 +21,4 @@ jobs:
         pip install mypy
     - name: Analysing the code with mypy
       run: |
-        mypy
+        mypy --install-types --non-interactive
