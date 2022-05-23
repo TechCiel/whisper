@@ -93,10 +93,10 @@
         </tbody>
     </table>
     <p id="pagination">
-        <a href="#" onclick="setUpdate('page', 1)">&lt;&lt;</a>
-        <a href="#" onclick="setUpdate('page', {{ prev_page }})">&lt;</a>
-        <input id="page" type="text" onchange="update()" value="{{ page }}"> / {{ max_page }}
-        <a href="#" onclick="setUpdate('page', {{ next_page }})">&gt;</a>
-        <a href="#" onclick="setUpdate('page', {{ max_page }})">&gt;&gt;</a>
+        <a href="#" onclick="page(1)">&lt;&lt;</a>
+        <a href="#" onclick="page({{ prev_page }})">&lt;</a>
+        <input id="page" type="text" onchange="page(this.value)" value="{{ page }}"> / {{ max_page }}
+        <a href="#" onclick="page({{ next_page }})">&gt;</a>
+        <a href="#" onclick="page({{ max_page }})">&gt;&gt;</a>
     </p>
 {% endblock %}

@@ -40,19 +40,15 @@ def admin() -> ResponseReturnValue:
     search = request.args.get('search', None, type=str)
     provide = request.args.get('provide', None, type=str)
     page = san_page(request.args.get('page', 1, type=int))
-    while True:
-        results, max_page = get_posts(
-            page=page,
-            page_size=20,
-            tag=tag,
-            indexed=index,
-            public=visible,
-            provider=provide,
-            like=search,
-        )
-        if page <= max_page:
-            break
-        page = 1
+    results, max_page = get_posts(
+        page=page,
+        page_size=20,
+        tag=tag,
+        indexed=index,
+        public=visible,
+        provider=provide,
+        like=search,
+    )
     prev_page = san_page(page-1, max_page)
     next_page = san_page(page+1, max_page)
     cur = current_app.db.execute(
