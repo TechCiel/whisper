@@ -33,8 +33,6 @@ class Post:
     ) -> None:
         """Check slug format and init object"""
         # pylint: disable=too-many-arguments
-        if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', slug) is None:
-            raise ValueError('slug must be dash-joined [a-z0-9]')
         self.slug = slug
         self._orig_slug = slug
         self.provide = provide
@@ -53,7 +51,17 @@ class Post:
         current_app.e('core:load_post', {'post': self})
 
     @property
-    def tag(self) -> set[str]:
+    def slug(self) -> str:
+        """Slug checker"""
+        return self._slug
+
+    @slug.setter
+    def slug(self, val: str) -> None:
+        """Slug checker"""
+        if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', val) is None:
+            raise ValueError('slug must be dash-joined [a-z0-9]')
+        self._slug = val
+
         """Lazy load tags of a post"""
         if self._tag is None:
             cur = current_app.db.execute(
