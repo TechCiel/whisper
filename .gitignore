@@ -1,0 +1,15 @@
+# instance data
+/venv/*
+/instance/*
+!/instance/config.example.py
+
+# tmp files
+.*
+~*
+*~
+_*
+*.egg*
+/build/
+/dist/
+!.git*
+!__*__.py
