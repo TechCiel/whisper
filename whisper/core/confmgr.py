@@ -25,6 +25,10 @@ class Config:
         """Check option existence"""
         return key in self._config
 
+    def __len__(self) -> int:
+        """Return the number of sections or options"""
+        return len(self._config)
+
     def __getitem__(self, key: str) -> t.Any:
         """Returns value if option exists, defaults to nesting Config"""
         if key not in self._config:
