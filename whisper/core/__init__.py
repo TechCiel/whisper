@@ -9,6 +9,7 @@ for processing requests.
 # autopep8: off
 import typing as t
 import os
+import sys
 import logging
 import secrets
 import sqlite3
@@ -39,51 +40,54 @@ __all__ = (['WhisperFlask', 'SlugConverter', 'current_app', 'app']
 class WhisperFlask(Flask):
     """Add global objects and manage instance"""
     # pylint: disable=too-many-instance-attributes
-    c: Config
-    e: EventManager
-    p: dict[str, BaseProvider]
-    main: MainProvider
+    class SlugConverter(BaseConverter):
+        """Catch valid post slug in URL with lower priority"""
+        regex = '[a-z0-9]+(-[a-z0-9]+)*'
+        weight = 200
+
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore
+        """Init paths, config and objects for Whisper"""
+        kwargs['static_folder'] = None
+        kwargs['template_folder'] = None
+        super().__init__(*args, **kwargs)
+        # app pathes
+        self.instance_path = os.path.abspath(
+            os.environ.get('WHISPER_INSTANCE')
+            or (
+                'instance' if os.path.isdir('instance')
+                else os.getcwd()
+            )
+        )
+        self.static_folder = os.path.join(self.instance_path, '_static')
+        # app misc config
+        self.secret_key = secrets.token_hex(32)
+        self.use_x_sendfile = True
+        self.url_map.converters['slug'] = WhisperFlask.SlugConverter
+        # app global objects
+        self.c = Config()
+        self.e = EventManager()
+        self.p: dict[str, BaseProvider] = {}
+        self.main: MainProvider = StubProvider()  # load later
 
     @property
     def db(self) -> sqlite3.Connection:
         """Proxy database connection access"""
         return get_db()
 
-    def instance_resource(self, resource: str) -> str:
+    def app_resource(self, plugin: str, *resource: str) -> str:
+        """Return absolute path of a resource from plugin."""
+        # pylint: disable=no-self-use
+        return os.path.join(
+            str(sys.modules[f'whisper.{plugin}'].__path__[0]),
+            *resource
+        )
+
+    def instance_resource(self, *resource: str) -> str:
         """Return absolute path of an instance resource."""
-        return os.path.join(self.instance_path, resource)
+        return os.path.join(self.instance_path, *resource)
 
 
-class SlugConverter(BaseConverter):
-    """Catch valid post slug in URL with lower priority"""
-    regex = '[a-z0-9]+(-[a-z0-9]+)*'
-    weight = 200
-
-
-# app instance
-application = app = WhisperFlask(
-    __name__,
-    static_folder=None,
-    template_folder=None,
-)
-# app pathes
-app.root_path = os.path.dirname(app.root_path)
-app.instance_path = os.path.abspath(
-    os.environ.get('WHISPER_INSTANCE')
-    or (
-        'instance' if os.path.isdir('instance')
-        else os.getcwd()
-    )
-)
-app.static_folder = os.path.join(app.instance_path, '_static')
-# app misc config
-app.secret_key = secrets.token_hex(32)
-app.use_x_sendfile = True
-app.url_map.converters['slug'] = SlugConverter
-# app global objects
-app.c = Config()
-app.e = EventManager()
-app.p = {}  # providers by name
+application = app = WhisperFlask(__name__)
 
 with app.app_context():
     current_app.logger.setLevel(logging.INFO)
@@ -95,7 +99,11 @@ with app.app_context():
     db.init_db()
 
     # execute user config
-    with current_app.open_instance_resource('config.py') as f:
+    with open(
+        current_app.instance_resource('config.py'),
+        'r',
+        encoding='utf-8',
+    ) as f:
         # pylint: disable=exec-used
         exec(compile(
             f.read(),
