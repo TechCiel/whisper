@@ -156,11 +156,12 @@ class Post:
         current_app.db.commit()
 
 
-def get_post(slug: str, public: bool = True) -> t.Optional[Post]:
+def get_post(slug: str, show_private: bool = False) -> t.Optional[Post]:
     """Return Post object by slug"""
     slug = current_app.e('core:get_post', {'slug': slug}).get('slug', slug)
-    sql = 'SELECT * FROM post WHERE slug=?'
-    sql += ' AND public = 1' if public else ''
+    sql = 'SELECT * FROM post WHERE slug = ?'
+    if not show_private:
+        sql += ' AND public = 1'
     cur = current_app.db.execute(sql, (slug,))
     if row := cur.fetchone():
         return Post(**dict(row))

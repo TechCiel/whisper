@@ -18,7 +18,8 @@ bp = Blueprint('core', __name__)
 @bp.route('/<slug:slug>/<path:path>', endpoint='post_resource')
 def post_page(slug: str, path: str) -> ResponseReturnValue:
     """Send post page request to the corresponding provider plugin"""
-    p = get_post(slug)
+    show_private = current_app.e('admin:is').get('is', False)
+    p = get_post(slug, show_private)
     # post not found
     if not p:
         # may use hook
