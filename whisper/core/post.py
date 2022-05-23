@@ -206,16 +206,16 @@ def get_post(slug: str, show_private: bool = False) -> t.Optional[Post]:
 def get_posts(
     page: int,
     page_size: int,
-    tag: t.Optional[str],
-    indexed: t.Optional[bool],
-    public: t.Optional[bool],
-    provider: t.Optional[str],
-    like: t.Optional[str],
+    tag: t.Optional[str] = None,
+    indexed: t.Optional[bool] = None,
+    public: t.Optional[bool] = None,
+    provider: t.Optional[str] = None,
+    like: t.Optional[str] = None,
 ) -> tuple[list[Post], int]:
     """Return a list of Post with filtering and pagination"""
     # pylint: disable=too-many-arguments
     tag = current_app.e('core:get_posts', {'tag': tag}).get('tag', tag)
-    if tag:
+    if tag is not None:
         cond_sql = ' JOIN tag ON post.slug = tag.post WHERE tag.tag = :tag'
     else:
         cond_sql = ' WHERE 1'
