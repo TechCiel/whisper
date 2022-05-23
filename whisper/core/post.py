@@ -111,7 +111,7 @@ class Post:
         self._meta = metas.copy()
 
     @property
-    def file(self) -> list[str]:
+    def files(self) -> list[str]:
         """Scan upload dir to list files associated with this post"""
         path = current_app.instance_resource(self._orig_slug)
         if not os.path.isdir(path):
