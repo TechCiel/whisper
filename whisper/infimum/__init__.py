@@ -18,7 +18,7 @@ class InfimumTheme(MainProvider):
         """Render markdown post into template"""
         # pylint: disable=possibly-unused-variable
         if path: # forward to file provider
-            current_app.p['file'].render(post, path)
+            return current_app.p['file'].render(post, path)
         if current_app.p.get(post.provide) == self:
             post = markdown(post)
         return template('infimum', 'post.html', strftime=strftime, **locals())
