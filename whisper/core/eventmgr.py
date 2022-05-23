@@ -28,6 +28,8 @@ class EventManager:
         """Invoke a event by name, call functions with args specified"""
         if arg is None:
             arg = {}
+        if event.startswith('main:'):
+            event = event.replace('main:', f'{current_app.c.core.main}:')
         for callback in self.registry.get(event, []):
             ret = callback(arg)
             if not isinstance(ret, dict):
