@@ -53,15 +53,10 @@ def load(plugin: str) -> None:
     current_app.logger.info(f'Loading {plugin}')
     if plugin not in current_app.c:
         current_app.c[plugin] = Config()
-    # import ..'module_name'.config as mod
-    mod = importlib.import_module(
-        '..'+plugin+'.config',
-        package=__package__,
-    )
+    # import whisper.'plugin'.config as mod
+    mod = importlib.import_module('whisper.'+plugin+'.config')
     if 'provider' in mod.__dict__ and issubclass(mod.provider, BaseProvider):
-        current_app.logger.info(
-            f'Registering provider {plugin}: {mod.provider}',
-        )
+        current_app.logger.info(f'Registering provider {plugin}: {mod.provider}')
         current_app.p[plugin] = mod.provider()
 
 
