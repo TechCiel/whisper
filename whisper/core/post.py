@@ -62,6 +62,8 @@ class Post:
             raise ValueError('slug must be dash-joined [a-z0-9]')
         self._slug = val
 
+    @property
+    def tag(self) -> list[str]:
         """Lazy load tags of a post"""
         if self._tag is None:
             cur = current_app.db.execute(
@@ -71,7 +73,17 @@ class Post:
             self._tag = {row['tag'] for row in cur}
             self._orig_tag = self._tag.copy()
             current_app.e('core:load_post_tag', {'post': self})
-        return self._tag
+        return sorted(self._tag)
+
+    @tag.setter
+    def tag(self, tags: list[str]) -> None:
+        if not isinstance(tags, list):
+            raise TypeError(f'tags must be `list`, not `{type(tags)}`')
+        for tag_ in tags:
+            if not isinstance(tag_, str):
+                raise TypeError(f'tag must be `str`, not `{type(tag_)}`')
+        self._tag = set(tags)
+        self._tag.difference_update({''})
 
     @property
     def meta(self) -> dict[str, str]:
@@ -85,6 +97,18 @@ class Post:
             self._orig_meta = self._meta.copy()
             current_app.e('core:load_post_meta', {'post': self})
         return self._meta
+
+    @meta.setter
+    def meta(self, metas: dict[str, str]) -> None:
+        if not isinstance(metas, dict):
+            raise TypeError(f'metas must be `dict`, not `{type(metas)}`')
+        for k, v in metas.items():
+            if not isinstance(k, str):
+                raise TypeError(f'meta key must be `str`, not `{type(k)}`')
+            if not isinstance(v, str):
+                raise TypeError(f'meta value must be `str`, not `{type(v)}`')
+        metas.pop('', None)
+        self._meta = metas.copy()
 
     @property
     def file(self) -> list[str]:
