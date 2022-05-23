@@ -28,12 +28,16 @@ class InfimumTheme(MainProvider):
         # pylint: disable=possibly-unused-variable
         def san_page(page: int, maxi: int = 2**32) -> int:
             return max(1, min(page, maxi))
+        if current_app.e('admin:is').get('is', False):
+            public = None
+        else:
+            public = True
         posts, max_page = get_posts(
             page=page,
             page_size=current_app.c.infimum.page_size,
             tag=tag,
             indexed=True,
-            public=not current_app.e('admin:is').get('is', False),
+            public=public,
         )
         prev_page = san_page(page-1, max_page)
         next_page = san_page(page+1, max_page)
