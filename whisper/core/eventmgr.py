@@ -5,7 +5,7 @@ import typing as t
 
 from . import current_app
 
-__all__ = ['EventManager', 'AnyDict', 'EventHandler']
+__all__ = ['EventManager', 'AnyDict', 'EventHandler', 'event_handler']
 
 AnyDict = dict[t.Any, t.Any]
 EventHandler = t.Callable[[AnyDict], AnyDict]
