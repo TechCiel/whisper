@@ -7,8 +7,8 @@ show a list of associated files using main provider.
 import os
 from flask import send_from_directory, render_template_string
 from flask.typing import ResponseReturnValue
-from whisper.core import BaseProvider, Post
 
+from whisper.core import BaseProvider, Post
 from whisper.core import current_app
 
 __all__ = ['FileProvider']
