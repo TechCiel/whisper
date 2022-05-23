@@ -60,11 +60,15 @@ class WhisperFlask(Flask):
         )
         self.static_folder = os.path.join(self.instance_path, '_static')
         # app misc config
-        self.secret_key = secrets.token_hex(32)
-        self.use_x_sendfile = True
+        self.config.update({
+            'SECRET_KEY': secrets.token_hex(32),
+            'USE_X_SENDFILE': True,
+            'SESSION_REFRESH_EACH_REQUEST': True,
+            'SESSION_COOKIE_SAMESITE': 'Lax',
+            'SESSION_COOKIE_SECURE': True,
+        })
         self.url_map.converters['slug'] = WhisperFlask.SlugConverter
         self.jinja_options['autoescape'] = False  # be careful
-        self.config['SESSION_REFRESH_EACH_REQUEST'] = True
         # app global objects
         self.c = Config()
         self.e = EventManager()

@@ -7,5 +7,9 @@ from . import app
 
 if __name__ == '__main__':
     os.environ.setdefault('FLASK_ENV', 'development')
-    app.use_x_sendfile = False
+    app.config.update({
+        'USE_X_SENDFILE': False,
+        'SESSION_COOKIE_SAMESITE': 'Lax',
+        'SESSION_COOKIE_SECURE': False,
+    })
     app.run(debug=True)
