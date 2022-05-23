@@ -126,6 +126,8 @@ class Post:
         """Save attributes into database, save new slug, tags and metadatas if necessary"""
         current_app.e('core:save_post', {'post': self})
         self.provide = self.provide or 'main'
+        if not self.creation:
+            self.creation = int(time.time())
         self.modified = int(time.time())
         current_app.db.execute(
             'REPLACE INTO post VALUES (?,?,?,?,?,?,?,?,?)',
