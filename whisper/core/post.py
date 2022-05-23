@@ -20,7 +20,7 @@ class Post:
     def __init__(
         self,
         slug: str,
-        provider: t.Optional[str] = None,
+        provide: str = 'main',
         public: bool = False,
         indexed: bool = False,
         creation: int = 0,
@@ -36,7 +36,7 @@ class Post:
             raise ValueError('slug must be dash-joined [a-z0-9]')
         self.slug = slug
         self._orig_slug = slug
-        self.provider = provider
+        self.provide = provide
         self.public = bool(public)
         self.indexed = bool(indexed)
         self.creation = creation if creation else int(time.time())
@@ -92,12 +92,13 @@ class Post:
     def save(self) -> None:
         """Save attributes into database, save new slug, tags and metadatas if necessary"""
         current_app.e('core:save_post', {'post': self})
+        self.provide = self.provide or 'main'
         self.modified = int(time.time())
         current_app.db.execute(
             'REPLACE INTO post VALUES (?,?,?,?,?,?,?,?,?)',
             (
                 self._orig_slug,
-                self.provider,
+                self.provide,
                 self.public,
                 self.indexed,
                 self.creation,

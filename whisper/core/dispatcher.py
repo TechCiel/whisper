@@ -26,11 +26,8 @@ def post_page(slug: str, path: str) -> ResponseReturnValue:
         if 'return' in evt:
             return evt['retrun']  # type: ignore
         abort(404)
-    # provider not set, use main provider
-    if not p.provider:
-        return current_app.main.render(p, path)
-    # provider set but not found
-    if p.provider not in current_app.p:
+    # provider not found
+    if p.provide not in current_app.p:
         # may use hook
         evt = current_app.e('core:provider_not_found', {'slug': slug})
         if 'return' in evt:
@@ -38,10 +35,10 @@ def post_page(slug: str, path: str) -> ResponseReturnValue:
         # may use dynamic provider
         if 'provider' in evt and isinstance(evt['provider'], BaseProvider):
             return evt['provider'].render(p, path)
-        current_app.logger.warning(f'provider {p.provider} not found')
-        raise NameError(f'provider {p.provider} not found')
+        current_app.logger.warning(f'provider {p.provide} not found')
+        raise NameError(f'provider {p.provide} not found')
     # use the provider specified
-    return current_app.p[p.provider].render(p, path)
+    return current_app.p[p.provide].render(p, path)
 
 
 @bp.route('/', defaults={'tag': None})

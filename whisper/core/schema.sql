@@ -1,6 +1,6 @@
 CREATE TABLE post (
   slug TEXT NOT NULL PRIMARY KEY,
-  provider TEXT,
+  provide TEXT NOT NULL DEFAULT 'main',
   public INTEGER NOT NULL DEFAULT 0,
   indexed INTEGER NOT NULL DEFAULT 0,
   creation INTEGER NOT NULL DEFAULT(strftime('%s')),
@@ -23,7 +23,7 @@ CREATE TABLE meta (
   PRIMARY KEY (post, k) ON CONFLICT REPLACE
 ) STRICT;
 
-CREATE INDEX idx_provider ON post(provider);
+CREATE INDEX idx_provide ON post(provide);
 CREATE INDEX idx_public ON post(public);
 CREATE INDEX idx_indexed ON post(indexed);
 CREATE INDEX idx_creation ON post(creation DESC);

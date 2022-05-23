@@ -87,8 +87,13 @@ app.p = {}  # providers by name
 
 with app.app_context():
     current_app.logger.setLevel(logging.INFO)
+
+    # register routes
+    app.register_blueprint(dispatcher.bp)
+
     # init db
     db.init_db()
+
     # execute user config
     with current_app.open_instance_resource('config.py') as f:
         # pylint: disable=exec-used
@@ -98,18 +103,11 @@ with app.app_context():
             'exec',
         ))
 
-# search for main provider plugin
-_main = app.p.get(app.c.core.main)
-if not isinstance(_main, MainProvider):
-    raise TypeError(
-        f'MainProvider not found at {app.c.core.main}.config.provider',
-    )
-app.main = _main
+    # search for main provider plugin
+    app.main = app.p['main'] = app.p.get(app.c.core.main)  # type: ignore
+    if not isinstance(app.p['main'], MainProvider):
+        raise TypeError(f'MainProvider not found at {app.c.core.main}.config.provider')
 
-# register routes
-app.register_blueprint(dispatcher.bp)
-
-# finished starting
-with app.app_context():
+    # finished starting
     app.e('core:loaded')
     current_app.logger.warn('whisper started')
