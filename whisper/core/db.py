@@ -37,7 +37,7 @@ def init_db() -> None:
     if not os.path.isfile(db_file):
         current_app.logger.warning('whisper.db not found! initializing...')
         if os.path.exists(db_file):
-            raise IsADirectoryError(f'{db_file} is a directory')
+            raise IsADirectoryError(f'database `{db_file}` is a directory')
         with open(
             current_app.app_resource('core', 'schema.sql'),
             'r',

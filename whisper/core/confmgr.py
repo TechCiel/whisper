@@ -65,4 +65,4 @@ def load(plugin: str) -> None:
 def require(plugin: str) -> None:
     """Check if a specified module is already lodaed, raise if not"""
     if plugin not in current_app.c:
-        raise NameError(f'{plugin} is required but not found')
+        raise NameError(f'`{plugin}` is required but not found')

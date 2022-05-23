@@ -42,7 +42,7 @@ def post_page(slug: str, path: str) -> ResponseReturnValue:
         if 'provider' in evt and isinstance(evt['provider'], BaseProvider):
             return evt['provider'].render(p, path)
         current_app.logger.warning(f'provider {p.provide} not found')
-        raise NameError(f'provider {p.provide} not found')
+        raise NameError(f'provider `{p.provide}` not found')
     # use the provider specified
     return current_app.p[p.provide].render(p, path)
 

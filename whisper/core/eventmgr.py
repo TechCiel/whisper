@@ -31,7 +31,7 @@ class EventManager:
         for callback in self.registry.get(event, []):
             ret = callback(arg)
             if not isinstance(ret, dict):
-                raise TypeError('event handler must return a dict')
+                raise TypeError('event handler must return a `dict`')
             arg = ret
             if arg.pop('_stop', False):
                 break

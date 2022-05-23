@@ -121,7 +121,7 @@ with app.app_context():
     app.main = app.p['main'] = app.p.get(app.c.core.main)  # type: ignore
     if not isinstance(app.p['main'], MainProvider):
         raise TypeError(
-            f'MainProvider not found at {app.c.core.main}.config.provider'
+            f'MainProvider not found at `{app.c.core.main}.config.provider`'
         )
 
     # finished starting
