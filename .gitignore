@@ -1,9 +1,3 @@
-# instance data
-/venv/*
-/instance/*
-!/instance/config.example.py
-
-# tmp files
 .*
 ~*
 *~
