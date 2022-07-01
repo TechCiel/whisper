@@ -2,11 +2,19 @@
 
 Markdown plugin for Whisper, a highly modularized multi-purpose blog engine.
 
-Renders markdown and then forward the result to the main provider.
+Translate markdown in post.content to HTML, and forward the result to another provider.
 
 ## Installation
 
-WIP
+```
+pip install whisper-blog-markdown
+```
+
+## Configuration
+
+Add `load('markdown')` in `instance/config.py`.
+
+For advanced usage please refer to `whisper/markdown/config.py`.
 
 ## License
 
