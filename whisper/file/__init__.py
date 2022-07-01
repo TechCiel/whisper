@@ -66,4 +66,6 @@ class FileProvider(BaseProvider):
         ]
         post.content = render_template_string(list_html, **locals())
         current_app.e('file:list_rendered', locals())
-        return current_app.p[current_app.c.file.main].render(post, path)
+        # forward to another provider
+        provider = post.meta.get('file:main', current_app.c.file.main)
+        return current_app.p[provider].render(post, path)
