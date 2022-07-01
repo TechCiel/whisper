@@ -36,4 +36,5 @@ class MarkdownProvider(BaseProvider):
     def render(self, post: Post, path: str) -> ResponseReturnValue:
         """Render markdown and forward to main provider"""
         post = markdown(post)
-        return current_app.p[current_app.c.markdown.main].render(post, path)
+        provider = post.meta.get('markdown:main', current_app.c.markdown.main)
+        return current_app.p[provider].render(post, path)
