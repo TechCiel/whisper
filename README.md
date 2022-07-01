@@ -2,11 +2,19 @@
 
 File plugin for Whisper, a highly modularized multi-purpose blog engine.
 
-Serve file specified by URL, or specified by post content, or show a list of associated files using main provider.
+Serve file specified by URL or post content, otherwise show a list of associated files using another provider.
 
 ## Installation
 
-WIP
+```
+pip install whisper-blog-file
+```
+
+## Configuration
+
+Add `load('file')` in `instance/config.py`.
+
+For advanced usage please refer to `whisper/file/config.py`.
 
 ## License
 

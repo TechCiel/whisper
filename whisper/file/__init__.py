@@ -1,8 +1,8 @@
 """
 This package is the file provider of Whisper, serves associated file for posts.
 
-This provider serves file specified by URL, or specified by post content, or
-show a list of associated files using main provider.
+Serve file specified by URL or post content, otherwise show a list of associated
+files using another provider.
 """
 import os
 
@@ -17,11 +17,11 @@ __all__ = ['FileProvider']
 
 
 class FileProvider(BaseProvider):
-    """Serves associated file for posts"""
+    """Serve associated file for posts"""
 
     @staticmethod
     def static(post: Post, path: str) -> ResponseReturnValue:
-        """Search static files for post"""
+        """Server uploaded file for post"""
         evt = current_app.e('file:static', locals())
         path = evt.get('path', path)
         return send_from_directory(
@@ -31,8 +31,8 @@ class FileProvider(BaseProvider):
         )
 
     def render(self, post: Post, path: str) -> ResponseReturnValue:
-        """Serve file by URL, content, or show file list using main provider"""
-        # file specified
+        """Serve file by URL, content, or show file list using another provider"""
+        # file specified in URL
         if path:
             return self.static(post, path)
         current_app.e('file:render', locals())
@@ -44,6 +44,7 @@ class FileProvider(BaseProvider):
                 current_app.logger.warning(
                     f'file specified not found for post `{post.slug}`, using list'
                 )
+        # render a file list
         # pylint: disable=possibly-unused-variable
         current_app.e('file:list', locals())
         files = [os.path.relpath(f, post.upload_dir) for f in post.files]
