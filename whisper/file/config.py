@@ -15,7 +15,7 @@ app.c.file.main = 'main'
 
 app.c.file.css = ''
 # Exmaple:
-# app.c.file.css = """<style>
+# current_app.c.file.css = """<style>
 # ul {
 #     ...
 # }
@@ -23,6 +23,6 @@ app.c.file.css = ''
 
 app.c.file.js = ''
 # Exmaple:
-# app.c.file.js = """<script>
+# current_app.c.file.js = """<script>
 # // code goes here ...
 # </script>"""
